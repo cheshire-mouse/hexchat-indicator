@@ -1,5 +1,5 @@
 /*
- * indicator.c - xchat plugin to support the Messaging Indicator
+ * indicator.c - hexchat plugin to support the Messaging Indicator
  *
  * Copyright (C) 2009 Scott Parkerson <scott.parkerson@gmail.com>
  * Copyright (C) 2009-2012 Canonical Ltd.
@@ -18,6 +18,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
+ * modified by cheshire-mouse
  */
 
 #include <config.h>
@@ -26,28 +27,28 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
-#include "xchat-plugin.h"
+#include "hexchat-plugin.h"
 #include <unity.h>
 
 #define MESSAGING_INDICATOR_PLUGIN_NAME     _("Messaging Indicator")
 #define MESSAGING_INDICATOR_PLUGIN_VERSION  VERSION
 #define MESSAGING_INDICATOR_PLUGIN_DESC     _("Notify the user on Xchat events via the Messaging Indicator")
 
-void xchat_plugin_get_info   (char **plugin_name, char **plugin_desc, char **plugin_version, void **reserved);
-int  xchat_plugin_init       (xchat_plugin *plugin_handle, char **plugin_name, char **plugin_desc, char **plugin_version, char *arg);
-int  xchat_plugin_deinit     (void);
+void hexchat_plugin_get_info   (char **plugin_name, char **plugin_desc, char **plugin_version, void **reserved);
+int  hexchat_plugin_init       (hexchat_plugin *plugin_handle, char **plugin_name, char **plugin_desc, char **plugin_version, char *arg);
+int  hexchat_plugin_deinit     (void);
 
-static xchat_plugin	*ph;
+static hexchat_plugin	*ph;
 static MessagingMenuApp *mmapp;
 #ifdef HAVE_UNITY
 static UnityLauncherEntry	*launcher = NULL;
 #endif
-static xchat_hook	*msg_hilight;
-static xchat_hook	*action_hilight;
-static xchat_hook	*pm;
-static xchat_hook	*pm_dialog;
-static xchat_hook	*ch_nick;
-static xchat_hook	*tab_focus;
+static hexchat_hook	*msg_hilight;
+static hexchat_hook	*action_hilight;
+static hexchat_hook	*pm;
+static hexchat_hook	*pm_dialog;
+static hexchat_hook	*ch_nick;
+static hexchat_hook	*tab_focus;
 static GtkWindow	*win;
 static gchar		*focused;
 static gboolean		run = FALSE;
@@ -56,7 +57,7 @@ static void remove_indsource (gchar *sourceid);
 static void add_indsource (gchar *sourceid);
 static void really_activate_window (GtkWindow *win);
 gboolean focus_win_cb (GtkWindow *win,  GParamSpec *pspec, gpointer data);
-static xchat_context *stored_ctx = NULL;
+static hexchat_context *stored_ctx = NULL;
 
 static void
 source_display (MessagingMenuApp *mmapp,
@@ -66,33 +67,33 @@ source_display (MessagingMenuApp *mmapp,
 	GtkWindow *win;
 
 		if (channel) {
-			xchat_context *current_ctx;
-			current_ctx = xchat_get_context(ph);
-			xchat_context *ctx;
-			ctx = xchat_find_context (ph, NULL, channel);
+			hexchat_context *current_ctx;
+			current_ctx = hexchat_get_context(ph);
+			hexchat_context *ctx;
+			ctx = hexchat_find_context (ph, NULL, channel);
 			/*
 			g_debug ("INDICATOR: Changing to channel %s", channel);
 			*/
-			win = (GtkWindow *)xchat_get_info (ph, "win_ptr");
-			if (xchat_set_context (ph, ctx)) {
+			win = (GtkWindow *)hexchat_get_info (ph, "win_ptr");
+			if (hexchat_set_context (ph, ctx)) {
 				/*
-				g_debug ("xchat-indicator: Showing window");
+				g_debug ("hexchat-indicator: Showing window");
 				*/
-				xchat_command (ph, "GUI SHOW");
-				xchat_command (ph, "GUI FOCUS");
+				hexchat_command (ph, "GUI SHOW");
+				hexchat_command (ph, "GUI FOCUS");
 				gtk_widget_show (GTK_WIDGET (win));
 				really_activate_window (GTK_WINDOW (win));
 				/* gtk_window_present_with_time(GTK_WINDOW (win), timestamp); */
 		} else {
-			g_warning ("xchat-indicator: context change fail");
+			g_warning ("hexchat-indicator: context change fail");
 		}
 		if (channel != NULL) {
 			remove_indsource (channel);
 		}
-		xchat_set_context (ph, current_ctx);
+		hexchat_set_context (ph, current_ctx);
 	}
 	/*
-	g_debug ("xchat-indicator: Indicator displayed");
+	g_debug ("hexchat-indicator: Indicator displayed");
 	*/
 }
 
@@ -134,7 +135,7 @@ update_indicator (gchar *sourceid)
 	if (sourceid != NULL)
 	{
 		/*
-		g_debug ("xchat-indicator: found existing indicator");
+		g_debug ("hexchat-indicator: found existing indicator");
 		*/
 		messaging_menu_app_set_source_time (MESSAGING_MENU_APP (mmapp),
 			sourceid,  g_get_real_time ());
@@ -152,7 +153,7 @@ add_indsource (gchar *sourceid)
 
 	if (!run)
 	{
-		GtkWindow *win = (GtkWindow *)xchat_get_info (ph, "win_ptr");
+		GtkWindow *win = (GtkWindow *)hexchat_get_info (ph, "win_ptr");
 		if (GTK_IS_WINDOW (win))
 		{
 			g_signal_connect(G_OBJECT(win), "notify::has-toplevel-focus", G_CALLBACK (focus_win_cb), NULL);
@@ -196,44 +197,44 @@ nick_change_cb (char *word[], void *data)
 		messaging_menu_app_append_source (MESSAGING_MENU_APP (mmapp), new_nick, NULL, new_nick);
 	}
 
-	return XCHAT_EAT_NONE;
+	return HEXCHAT_EAT_NONE;
 }
 
 static int
 indicate_msg_cb (char *word[], gpointer data)
 {
 	GtkWindow *win;
-	xchat_context *ctx;
-	ctx = xchat_find_context (ph, NULL, word[2]);
-	xchat_set_context (ph, ctx);
-	gchar *channel = xchat_get_info (ph, "channel");
-	win = (GtkWindow *)xchat_get_info (ph, "win_ptr");
+	hexchat_context *ctx;
+	ctx = hexchat_find_context (ph, NULL, word[2]);
+	hexchat_set_context (ph, ctx);
+	gchar *channel = hexchat_get_info (ph, "channel");
+	win = (GtkWindow *)hexchat_get_info (ph, "win_ptr");
 	
 	if (focused == channel && GTK_WINDOW (win)->has_toplevel_focus)
-		return XCHAT_EAT_NONE;
+		return HEXCHAT_EAT_NONE;
 
 	add_indsource (channel);
-	return XCHAT_EAT_NONE;
+	return HEXCHAT_EAT_NONE;
 }
 
 static int
 focus_tab_cb (char *word[], gpointer data)
 {
 	gchar *channel;
-	channel = xchat_get_info (ph, "channel");
+	channel = hexchat_get_info (ph, "channel");
 	/*
-	g_debug ("xchat-indicator: tab focused for channel %s", channel);
+	g_debug ("hexchat-indicator: tab focused for channel %s", channel);
 	*/
 	if (messaging_menu_app_has_source(MESSAGING_MENU_APP (mmapp), channel)) {
 		/*
-		g_debug ("xchat-indicator: found indicator for %s", channel);
+		g_debug ("hexchat-indicator: found indicator for %s", channel);
 		*/
 		remove_indsource (channel);
 	}
 	focused = channel;
 	/* store context to workaround focus_win_cb issues */
-	stored_ctx =  xchat_get_context (ph);
-	return XCHAT_EAT_NONE;
+	stored_ctx =  hexchat_get_context (ph);
+	return HEXCHAT_EAT_NONE;
 }
 
 gboolean
@@ -246,7 +247,7 @@ focus_win_cb (GtkWindow *win,  GParamSpec *pspec, gpointer data)
 		return FALSE;
 	}
 	/*
-	g_debug ("xchat-indicator: window focused");
+	g_debug ("hexchat-indicator: window focused");
 	*/
 	
 	/* restore the context of the previously focussed tab, not sure if xchat
@@ -255,15 +256,15 @@ focus_win_cb (GtkWindow *win,  GParamSpec *pspec, gpointer data)
 	   doesn't change it back to the selected tab on focus events. 
 	   The focus_tab stored value should give us what we want though */
 	if (stored_ctx)
-		xchat_set_context (ph, stored_ctx);
+		hexchat_set_context (ph, stored_ctx);
 	
-	channel = xchat_get_info (ph, "channel");
+	channel = hexchat_get_info (ph, "channel");
 	/*
-	g_debug ("xchat-indicator: tab focused for channel %s", channel);
+	g_debug ("hexchat-indicator: tab focused for channel %s", channel);
 	*/
 	if (messaging_menu_app_has_source(MESSAGING_MENU_APP (mmapp), channel)) {
 		/*
-		g_debug ("xchat-indicator: found indicator for %s", channel);
+		g_debug ("hexchat-indicator: found indicator for %s", channel);
 		*/
 		remove_indsource (channel);
 	}
@@ -307,7 +308,7 @@ really_activate_window (GtkWindow *window)
 }
 
 void
-xchat_plugin_get_info (char **plugin_name, char **plugin_desc, char **plugin_version, void **reserved)
+hexchat_plugin_get_info (char **plugin_name, char **plugin_desc, char **plugin_version, void **reserved)
 {
 	*plugin_name    = MESSAGING_INDICATOR_PLUGIN_NAME;
 	*plugin_desc    = MESSAGING_INDICATOR_PLUGIN_DESC;
@@ -315,9 +316,9 @@ xchat_plugin_get_info (char **plugin_name, char **plugin_desc, char **plugin_ver
 }
 
 int
-xchat_plugin_init (xchat_plugin *plugin_handle, char **plugin_name, char **plugin_desc, char **plugin_version, char *arg)
+hexchat_plugin_init (hexchat_plugin *plugin_handle, char **plugin_name, char **plugin_desc, char **plugin_version, char *arg)
 {
-	xchat_plugin_get_info (plugin_name, plugin_desc, plugin_version, NULL);
+	hexchat_plugin_get_info (plugin_name, plugin_desc, plugin_version, NULL);
 
 	ph = plugin_handle;
 	const gchar *desktop_id = g_strconcat(g_get_prgname(), ".desktop", NULL);
@@ -330,36 +331,36 @@ xchat_plugin_init (xchat_plugin *plugin_handle, char **plugin_name, char **plugi
 	launcher = unity_launcher_entry_get_for_desktop_id (desktop_id);
 #endif
 
-	msg_hilight = xchat_hook_print (ph, "Channel Msg Hilight",
-		XCHAT_PRI_NORM, indicate_msg_cb, NULL);
-	action_hilight = xchat_hook_print (ph, "Channel Action Hilight",
-		XCHAT_PRI_NORM, indicate_msg_cb, NULL);
-	pm = xchat_hook_print (ph, "Private Message",
-		XCHAT_PRI_NORM, indicate_msg_cb, NULL);
-	pm_dialog = xchat_hook_print (ph, "Private Message to Dialog",
-		XCHAT_PRI_NORM, indicate_msg_cb, NULL);
-	tab_focus = xchat_hook_print (ph, "Focus Tab",
-		XCHAT_PRI_NORM, focus_tab_cb, NULL);
-	ch_nick = xchat_hook_print (ph, "Change Nick",
-		XCHAT_PRI_NORM, nick_change_cb, NULL);
+	msg_hilight = hexchat_hook_print (ph, "Channel Msg Hilight",
+		HEXCHAT_PRI_NORM, indicate_msg_cb, NULL);
+	action_hilight = hexchat_hook_print (ph, "Channel Action Hilight",
+		HEXCHAT_PRI_NORM, indicate_msg_cb, NULL);
+	pm = hexchat_hook_print (ph, "Private Message",
+		HEXCHAT_PRI_NORM, indicate_msg_cb, NULL);
+	pm_dialog = hexchat_hook_print (ph, "Private Message to Dialog",
+		HEXCHAT_PRI_NORM, indicate_msg_cb, NULL);
+	tab_focus = hexchat_hook_print (ph, "Focus Tab",
+		HEXCHAT_PRI_NORM, focus_tab_cb, NULL);
+	ch_nick = hexchat_hook_print (ph, "Change Nick",
+		HEXCHAT_PRI_NORM, nick_change_cb, NULL);
 
-	xchat_print (ph,  (g_strjoin (" ", MESSAGING_INDICATOR_PLUGIN_NAME, MESSAGING_INDICATOR_PLUGIN_VERSION, _("plugin loaded."), NULL)));
+	hexchat_print (ph,  (g_strjoin (" ", MESSAGING_INDICATOR_PLUGIN_NAME, MESSAGING_INDICATOR_PLUGIN_VERSION, _("plugin loaded."), NULL)));
 
 	return TRUE;
 }
 
 int
-xchat_plugin_deinit (void)
+hexchat_plugin_deinit (void)
 {
-	xchat_unhook (ph, msg_hilight);
-	xchat_unhook (ph, action_hilight);
-	xchat_unhook (ph, pm);
-	xchat_unhook (ph, pm_dialog);
-	xchat_unhook (ph, tab_focus);
+	hexchat_unhook (ph, msg_hilight);
+	hexchat_unhook (ph, action_hilight);
+	hexchat_unhook (ph, pm);
+	hexchat_unhook (ph, pm_dialog);
+	hexchat_unhook (ph, tab_focus);
 
 	g_object_unref (mmapp);
 
-	xchat_print (ph,  (g_strjoin (" ", MESSAGING_INDICATOR_PLUGIN_NAME, MESSAGING_INDICATOR_PLUGIN_VERSION, _("plugin unloaded."), NULL)));
+	hexchat_print (ph,  (g_strjoin (" ", MESSAGING_INDICATOR_PLUGIN_NAME, MESSAGING_INDICATOR_PLUGIN_VERSION, _("plugin unloaded."), NULL)));
 
 	return TRUE;
 }
