@@ -1,4 +1,4 @@
-AC_INIT([xchat-indicator],[0.3.11],[http://launchpad.net/xchat-indicator],[xchat-indicator])
+AC_INIT([hexchat-indicator],[0.3.11],[https://github.com/cheshire-mouse/hexchat-indicator],[hexchat-indicator])
 
 AC_PREREQ([2.60])
 
