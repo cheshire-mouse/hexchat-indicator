@@ -1,0 +1,14 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@ --with autoreconf
+
+override_dh_auto_configure:
+	dh_auto_configure -- --libdir="\$${prefix}/lib"
+
+override_dh_install:
+	find debian/tmp/usr/lib -name *.la -delete
+	find debian/tmp/usr/lib -name *.a -delete
+	dh_install --fail-missing
+	mkdir -p debian/xchat-indicator/usr/lib/xchat/plugins
+	cp debian/tmp/usr/lib/xchat-gnome/plugins/indicator.so debian/xchat-indicator/usr/lib/xchat/plugins/indicator.so

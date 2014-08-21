@@ -1,0 +1,193 @@
+xchat-indicator (0.3.11-0ubuntu4) quantal; urgency=low
+
+  * Added Enhances in the debian/control file for both xchat and 
+    xchat-gnome (LP: #1049194)
+
+ -- Sean Feole <sean.feole@ubuntu.com>  Tue, 11 Sep 2012 14:10:07 -0500
+
+xchat-indicator (0.3.11-0ubuntu3) quantal; urgency=low
+
+  * debian/patches/libmessaging.patch:
+    - updated, should resolve sources been wrongly reset on focus events
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 30 Aug 2012 15:28:29 +0200
+
+xchat-indicator (0.3.11-0ubuntu2) quantal-proposed; urgency=low
+
+  * debian/control:
+    - use libmessaging-menu rather than libindicate
+  * debian/patches/libmessaging.patch:
+    - use libmessaging 
+  * debian/rules:
+    - don't use a multiarch libdir, xchat is not multiarched
+  * Updated the packaging to the current standards (dh9)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 27 Aug 2012 19:48:36 +0200
+
+xchat-indicator (0.3.11-0ubuntu1) quantal; urgency=low
+
+  * New upstream release
+    - Handle nick changes in a PM thanks to Jeremy Kerr (LP: #587902)
+  * debian/patches/indicate_0_7.patch
+    - dropped, merged upstream
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 12 Jun 2012 10:42:39 -0400
+
+xchat-indicator (0.3.10-0ubuntu4) precise; urgency=low
+
+  * debian/control
+    - bump build deps for libindicate-dev to >= 0.6.90
+  * debian/rules
+    - autoreconf
+  * debian/patches/indicate_0_7.patch
+    - pkgconfig fixes for indicate-0.7
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 10 Feb 2012 14:26:50 -0500
+
+xchat-indicator (0.3.10-0ubuntu3) precise; urgency=low
+
+  * debian/control
+    - bump build-dep on latest libunity-dev (ABI bump)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 13 Jan 2012 09:56:09 +0100
+
+xchat-indicator (0.3.10-0ubuntu2) oneiric; urgency=low
+
+  * debian/control:
+    - bump build-dep on latest libunity-dev (ABI bump)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Fri, 09 Sep 2011 12:27:35 +0200
+
+xchat-indicator (0.3.10-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+    - Quiet debug output
+    - Updated to build against latest libindicate
+  * debian/control
+    - Build depend on libindicate >= 0.5.90
+    - bump standards version to 3.9.2
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 11 Aug 2011 15:52:50 -0400
+
+xchat-indicator (0.3.9-0ubuntu1) natty; urgency=low
+
+  * New upstream release
+    - Don't use a pointer for a gboolean, thanks nmarques (LP: #742760)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 08 Apr 2011 11:35:35 -0400
+
+xchat-indicator (0.3.8-0ubuntu3) natty; urgency=low
+
+  * Rebuild against latest libunity (soname bump)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 07 Apr 2011 12:29:45 +0200
+
+xchat-indicator (0.3.8-0ubuntu2) natty; urgency=low
+
+  * dep on latest libunity. The interface is tracked now that we have consumers
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 24 Feb 2011 18:51:22 +0100
+
+xchat-indicator (0.3.8-0ubuntu1) natty; urgency=low
+
+  * New upstream release
+    - Check if the window has_toplevel_focus instead of is_active.  This 
+      handles determining when to create an indicator better as well as 
+      properly clearing the indicator/count better. (LP: #720098)
+    - Show GUI when selected from the indicator even if it has been hidden 
+      by the notification icon (LP: #586919)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 23 Feb 2011 03:00:25 -0500
+
+xchat-indicator (0.3.7-0ubuntu1) natty; urgency=low
+
+  * New upstream release
+    - Handle clearing indicator events on focus changes
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 11 Feb 2011 17:03:14 -0500
+
+xchat-indicator (0.3.6-0ubuntu1) natty; urgency=low
+
+  * New upstream releaes
+    - Indicate if the channel is focused but the window is not (LP: #580253)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 11 Feb 2011 12:01:46 -0500
+
+xchat-indicator (0.3.5-0ubuntu1) natty; urgency=low
+
+  * New upstream release
+    - Added support for setting the count in the unity launcher
+  * debian/control
+    - Added build depends for libunity-dev 
+    - Bumped standards version to 3.9.1
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 10 Feb 2011 23:03:07 -0500
+
+xchat-indicator (0.3.4-0ubuntu1) natty; urgency=low
+
+  * New upstream release
+    - Updated for libindicate-dev 0.4.91
+  * debian/control
+    - Bumped build depends for libindicate to >= 0.4.91
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 14 Jan 2011 12:40:31 -0600
+
+xchat-indicator (0.3.3-0ubuntu1) lucid; urgency=low
+
+  * New upstream release
+    - Fixed crasher, ensure indicator is in the hash table before trying 
+      to remove it (LP: #565061)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 23 Apr 2010 16:40:39 -0400
+
+xchat-indicator (0.3.2-0ubuntu1) lucid; urgency=low
+
+  * New upstream release 0.3.2 (LP: #497921)
+    - Handle the timestamp send by libindicate 0.3.1
+  * debian/control
+    - bump build depends for libindicate-dev to (>= 0.3.1)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 08 Feb 2010 09:08:30 -0500
+
+xchat-indicator (0.3.1-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release 0.3.1
+    - fixed what could have been leaks
+  * debian/copyright:
+    - clean up licensing and copyright
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Sat, 30 Jan 2010 22:54:20 -0500
+
+xchat-indicator (0.3-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release 0.3
+  * debian/control, debian/watch
+    - renamed upstream project xchat-indicator
+  * debian/control
+    - Set Vcs-Bzr to a branch owned by ~ubuntu-desktop
+    - Set maintainer to the ubuntu desktop team
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 11 Jan 2010 14:33:22 -0500
+
+xchat-indicator (0.2-2) lucid; urgency=low
+
+  * debian/control
+    - added build depends on libgtk2.0-dev 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 08 Jan 2010 09:11:46 -0500
+
+xchat-indicator (0.2-1) lucid; urgency=low
+
+  * New upstream release
+    - Don't add an indicator for message when the chat is focused (LP: #473137)
+    - Really raise the window when clicked
+  * Split the package into xchat-indicator and xchat-gnome-indicator
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 08 Jan 2010 02:44:54 -0500
+
+xchat-indicator (0.1-1) karmic; urgency=low
+
+  [ Ken VanDine ]
+  * Initial release 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 06 Aug 2009 17:23:01 +0100

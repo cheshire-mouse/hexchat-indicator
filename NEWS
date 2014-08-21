@@ -1,0 +1,19 @@
+xchat-indicator 0.3
+===================
+ * code clean up
+ * display plugin name and version on load and unload
+ * fix up some compiler warnings
+
+
+xchat-indicator 0.2
+===================
+ * load the right desktop file, programatically.
+ * support both xchat and xchat-gnome
+
+Bugs fixed:
+ (LP: #473137) - Don't add an indicator message when the chat is focused.  
+
+
+xchat-indicator 0.1
+===================
+* Initial release

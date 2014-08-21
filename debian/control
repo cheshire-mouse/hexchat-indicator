@@ -1,0 +1,34 @@
+Source: xchat-indicator
+Section: misc
+Priority: optional
+Maintainer: Ubuntu Desktop Team <ubuntu-desktop@lists.ubuntu.com>
+Build-Depends: debhelper (>= 9), 
+               dh-autoreconf,
+               autotools-dev, 
+               pkg-config, 
+               libmessaging-menu-dev,
+               libunity-dev (>= 5.0.0),
+               libgtk2.0-dev, 
+               xchat-gnome
+Standards-Version: 3.9.3
+Homepage: https://launchpad.net/xchat-indicator
+Vcs-Bzr: https://code.launchpad.net/~ubuntu-desktop/xchat-indicator/ubuntu
+Vcs-Browser: http://bazaar.launchpad.net/~ubuntu-desktop/xchat-indicator/ubuntu
+
+Package: xchat-gnome-indicator
+Architecture: any
+Depends: ${shlibs:Depends}, 
+         ${misc:Depends}, 
+         xchat-gnome (>= 0.26.1-1ubuntu2)
+Enhances: xchat-gnome
+Description: XChat-GNOME Indicator Plugin
+ XChat-GNOME plugin to utilize the Messaging Indicator.
+
+Package: xchat-indicator
+Architecture: any
+Depends: ${shlibs:Depends}, 
+         ${misc:Depends}, 
+         xchat
+Enhances: xchat
+Description: XChat Indicator Plugin
+ XChat plugin to utilize the Messaging Indicator.
