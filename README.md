@@ -3,6 +3,8 @@ hexchat-indicator
 
 Ubuntu messaging menu indicator for Hexchat IRC client
 
+It's a port of xchat-indicator, you can find it on [Launchpad](https://launchpad.net/xchat-indicator)
+
 installation
 -----------------
 
