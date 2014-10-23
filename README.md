@@ -10,7 +10,7 @@ installation
 
 Should work in Ubuntu 14.04
 
-    sudo apt-get install libindicate-dev libunity-dev
+    sudo apt-get install libindicate-dev libunity-dev libmessaging-menu-dev automake
     cd hexchat-indicator
     ./configure
     make
